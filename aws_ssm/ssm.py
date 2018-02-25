@@ -4,7 +4,7 @@ import re
 from six import string_types
 
 class SSM:
-  def __init__(self, names=None, parser=None, separator='/', decorator=None):
+  def __init__(self, names=None, parser=None, delimiter='/', decorator=None):
     names = names or os.environ.get('SSM_PARAMETERS',[])
     if isinstance(names, string_types):
       names = re.split(' |,', names)
@@ -13,7 +13,7 @@ class SSM:
     self._names = names
     self._values = {}
     self._parser = parser
-    self._separator = separator
+    self._delimiter = delimiter
     self._client = boto3.client('ssm')
     self._handler = None
     self.get_parameters(names)
@@ -37,9 +37,9 @@ class SSM:
     for parameter in parameters.get('Parameters',[]):
       self._values[parameter['Name']] = parameter['Value']
       if self._parser is None:
-        # Split parameter by separator removing the first level and converting to environment variable
+        # Split parameter by delimiter removing the first level and converting to environment variable
         # e.g. /my-stack/db/password will return ['db','password'], which will get converted to DB_PASSWORD
-        parts = parameter['Name'].strip(self._separator).split(self._separator)
+        parts = parameter['Name'].strip(self._delimiter).split(self._delimiter)
         if len(parts) > 1:
           key = '_'.join(parts[1:]).upper()
           os.environ[key] = parameter['Value']
