@@ -27,7 +27,7 @@ class SSM:
           event.get('detail-type') == 'Parameter Store Change' and
           event.get('detail',{}).get('name') in self._values.keys() and 
           event.get('detail',{}).get('operation') == 'Update'):
-        get_parameters(names=event['detail']['name'])
+        self.get_parameters(names=[event['detail']['name']])
       return self._handler(*args)
   def __getitem__(self, parameter):
     return self._values.get(parameter)
