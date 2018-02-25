@@ -12,9 +12,15 @@ Usage
   
   from aws_ssm import SSM
 
-  # The names parameter is required and is typically supplied as a list of parameter names 
+  # The names parameter is typically supplied as a list of parameter names 
+  ssm = SSM(names=['/myapp/db/password','/myapp/db/name'])
+
   # The names parameter can also be a space/comma-delimited string, which is useful if injecting names via environment variables
   ssm = SSM(names='/myapp/db/password,/myapp/db/name')
+
+  # If you don't supply a names input, you must configure the SSM_PARAMETERS environment variable with a space/comma-delimited string
+  os.environ['SSM_PARAMETERS'] = '/myapp/db/password'
+  ssm = SSM()
 
   # After creating the SSM object, the parameter values are available as dictionary keys
   db_password = ssm['/myapp/db/password']
@@ -40,8 +46,20 @@ Usage
   # E.g. my_function.ssm should be configured as the handler, assuming your function is called my_function and ssm is an instance of the SSM class
   @ssm
   def handler(event, context)
+    print(ssm['/myapp/db/password'])
     ...
     ...
+
+  # Assuming /myapp/db/password = password
+  # Sending a blank event to the ssm object will invoke the decorated handler and print "password"
+  ssm({},{})    # prints "password"
+
+  # Now if /myapp/db/password is updated externally in the parameter store to password123
+  # If the ssm object is configured as a handler for SSM parameter store CloudWatch event updates
+  # then the CloudWatch event will dynamically update the parameter and print "password123"
+  event = {'version': '0', 'id': 'f5d47c23-2f37-7632-254a-734323ff5208', 'detail-type': 'Parameter Store Change', 'source': 'aws.ssm', 'account': '123456789012', 'time': '2018-02-25T22:58:07Z', 'region': 'ap-southeast-2', 'resources': ['arn:aws:ssm:ap-southeast-2:123456789012:parameter/myapp/db/password'], 'detail': {'name': '/myapp/db/password', 'type': 'String', 'operation': 'Update'}}
+  
+  ssm(event,{})  # prints updated value "password123"
 
 Installation
 ------------

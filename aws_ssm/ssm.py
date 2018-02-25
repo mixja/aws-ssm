@@ -5,7 +5,9 @@ from six import string_types
 
 class SSM:
   def __init__(self, names=None, parser=None, delimiter='/', decorator=None):
-    names = names or os.environ.get('SSM_PARAMETERS',[])
+    names = names or os.environ.get('SSM_PARAMETERS')
+    if names is None:
+      raise KeyError('You must supply the names parameter or configure an environment variable called SSM_PARAMETERS.')
     if isinstance(names, string_types):
       names = re.split(' |,', names)
     if type(names) is not list:
