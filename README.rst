@@ -30,11 +30,11 @@ Usage
   db_password = os.environ['DB_PASSWORD']
 
   # For environment variable injection, the default delimiter is '/' but can be overriden via the delimiter parameter
-  ssm = SSM(names=['/my-app.db.password'], delimiter='.')
+  ssm = SSM(names=['/myapp.db.password'], delimiter='.')
 
   # If you encode the environment variable key in the value you can define a parser lambda function
   # E.g. assuming the value of /my-app/db/password is 'MYSQL_DB_PASSWORD=abc123'
-  ssm = SSM(names=['/my-app/db/password'], parser=lambda x: x.split('='))
+  ssm = SSM(names=['/myapp/db/password'], parser=lambda x: x.split('='))
   print(os.environ['MYSQL_DB_PASSWORD']) # outputs abc123
 
   # For Lambda functions you can decorate your handlers with the manager object
