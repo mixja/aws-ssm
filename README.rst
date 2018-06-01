@@ -18,7 +18,8 @@ Usage
   # The names parameter can also be a space/comma-delimited string, which is useful if injecting names via environment variables
   ssm = SSM(names='/myapp/db/password,/myapp/db/name')
 
-  # If you don't supply a names input, you must configure the SSM_PARAMETERS environment variable with a space/comma-delimited string
+  # If you don't supply a names input, you can configure the SSM_PARAMETERS environment variable with a space/comma-delimited string
+  # If ssm is not configured with any parameters, it will just return None when queried
   os.environ['SSM_PARAMETERS'] = '/myapp/db/password'
   ssm = SSM()
 

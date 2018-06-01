@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='aws_ssm',
-    version='0.3.0',
+    version='0.4.0',
     packages=[ 'aws_ssm' ],
     install_requires=[ 'boto3' ],
     extras_require={
